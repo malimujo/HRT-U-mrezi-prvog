@@ -1,4 +1,4 @@
-name: Ažuriraj U mrezi prvogm M3U
+name: Ažuriraj U mrezi prvog M3U
 on:
   schedule:
     - cron: - cron: '*/15 7-10 * * *'  # 🆕 SVAKIH 15 MIN IZMEĐU 7:00-10:00
