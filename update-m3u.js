@@ -14,8 +14,8 @@ async function updateM3U() {
     const page = await browser.newPage();
     await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36');
     
-    console.log('📄 Učitavam https://radio.hrt.hr/slusaonica/vijesti');
-    await page.goto('https://radio.hrt.hr/slusaonica/vijesti', { 
+    console.log('📄 Učitavam https://radio.hrt.hr/slusaonica/u-mrezi-prvog');
+    await page.goto('https://radio.hrt.hr/slusaonica/u-mrezi-prvog', { 
       waitUntil: 'networkidle2'
     });
     
@@ -62,10 +62,10 @@ async function updateM3U() {
       console.log('📅 Datum/vrijeme:', emisijaInfo);
       
       const m3uContent = `#EXTM3U
-#EXTINF:-1 tvg-logo="https://radio.hrt.hr/favicon.ico",HRT Vijesti ${emisijaInfo}
+#EXTINF:-1 tvg-logo="https://radio.hrt.hr/favicon.ico",HRT U mrezi prvog ${emisijaInfo}
 ${firstMp3}`;
 
-      fs.writeFileSync('vijesti.m3u', m3uContent);
+      fs.writeFileSync('U_mrezi_prvog.m3u', m3uContent);
       console.log('✅ M3U spreman s datumom/vremenom!');
     } else {
       throw new Error('Nema MP3-a');
@@ -76,7 +76,7 @@ ${firstMp3}`;
     const fallbackContent = `#EXTM3U
 #EXTINF:-1,HRT Vijesti 07.03.2026 09:10
 https://api.hrt.hr/media/28/da/20260307-vijesti-37328738-20260307091001.mp3`;
-    fs.writeFileSync('vijesti.m3u', fallbackContent);
+    fs.writeFileSync('U_mrezi_prvog.m3u', fallbackContent);
     console.log('✅ Fallback M3U spreman');
   } finally {
     if (browser) {
