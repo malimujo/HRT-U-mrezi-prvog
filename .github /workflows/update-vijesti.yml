@@ -1,4 +1,4 @@
-name: Ažuriraj vijesti M3U
+name: Ažuriraj U mrezi prvog M3U
 on:
   schedule:
     - cron: '17 * * * *'  # Svaki sat na 17. minuti
@@ -32,4 +32,4 @@ jobs:
       uses: stefanzweifel/git-auto-commit-action@v5
       with:
         commit_message: "Vijesti ažurirano: ${{ github.run_id }}"
-        file_pattern: vijesti.m3u
+        file_pattern: U_mrezi_prvog.m3u
