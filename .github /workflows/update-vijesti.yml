@@ -1,7 +1,7 @@
 name: Ažuriraj U mrezi prvog M3U
 on:
   schedule:
-    - cron: '17 * * * *'  # Svaki sat na 17. minuti
+    - cron: - cron: '*/15 7-10 * * *'  # 🆕 SVAKIH 15 MIN IZMEĐU 7:00-10:00
   workflow_dispatch:
 
 permissions:
