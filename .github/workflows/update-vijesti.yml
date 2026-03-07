@@ -1,1 +1,35 @@
+name: Ažuriraj Dogodilo se M3U
+on:
+  schedule:
+    - cron: '*/15 7-9 * * *'  # SVAKIH 15 MIN IZMEĐU 7:00-9:00
+  workflow_dispatch:
 
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+    
+    # PUPPETEER SPECIFIČNI SETUP
+    - name: Instaliraj Chrome i Puppeteer
+      run: |
+        npm init -y
+        npm install puppeteer cheerio axios
+        npx puppeteer browsers install chrome
+    
+    - name: Generiraj M3U s Puppeteer
+      run: node update-m3u.js
+    
+    - name: Commit i push
+      uses: stefanzweifel/git-auto-commit-action@v5
+      with:
+        commit_message: "Dogodilo se ažurirano: ${{ github.run_id }}"
+        file_pattern: dogodilo_se.m3u
