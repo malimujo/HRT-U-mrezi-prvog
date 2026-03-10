@@ -42,7 +42,7 @@ async function updateM3U() {
         }
       }
       
-      // 🎵 ISPPOPRAVLJENI REGEX u scriptovima (ISPPRAVLJEN ESCAPING)
+      // 🎵 REGEX u scriptovima
       const scripts = Array.from(document.querySelectorAll('script'));
       for (const script of scripts) {
         const content = script.textContent || script.innerHTML;
@@ -61,23 +61,37 @@ async function updateM3U() {
     console.log('🖼️ Slika:', result.image);
     
     if (result.mp3) {
-      // 🆕 POBOLJŠANI regex za SVE datume (kao za Drugi dio dana)
+      // 🆕 NAJNOVIJA EPIZODA po DATUMU (ne poziciji u tekstu)
       const webTime = await page.evaluate(() => {
         const bodyText = document.body.innerText || document.body.textContent || '';
-        // ✅ ŠIRI REGEX: "Pet, 06.03. u 20:00" - bilo koji dan/datuma
-        const timeMatches = bodyText.match(/([Pp]et|[Pp]on|[Uu]to|[Ss]ri|[Čč]et|[Ss]ub|[Nn]ed)(?:to|ak)?[,.\s]+(\d{1,2})[.\s]+(\d{1,2})[.\s]*u[.\s]*(\d{1,2}):(\d{2})/gi);
+        // Pronađi SVE datume/vremena
+        const timeMatches = bodyText.match(/([Pp]on|[Uu]to|[Ss]ri|[Čč]et|[Pp]et|[Ss]ub|[Nn]ed)(?:to|ak)?[,.\s]+(\d{1,2})[.\s]+(\d{1,2})[.\s]*u[.\s]*(\d{1,2}):(\d{2})/gi);
         
-        // Traži najnoviji (posljednji u tekstu = vjerojatno najnovija emisija)
         if (timeMatches && timeMatches.length > 0) {
-          const latestMatch = timeMatches[timeMatches.length - 1];
-          const fullMatch = latestMatch.match(/([Pp]et|[Pp]on|[Uu]to|[Ss]ri|[Čč]et|[Ss]ub|[Nn]ed)(?:to|ak)?[,.\s]+(\d{1,2})[.\s]+(\d{1,2})[.\s]*u[.\s]*(\d{1,2}):(\d{2})/i);
-          if (fullMatch) {
-            const dan = fullMatch[2].padStart(2, '0');
-            const mjesec = fullMatch[3].padStart(2, '0');
-            const sat = fullMatch[4].padStart(2, '0');
-            const minute = fullMatch[5];
-            return `${fullMatch[1]}, ${dan}.${mjesec}. u ${sat}:${minute}`;
+          let latestTime = null;
+          let latestTimestamp = 0;
+          
+          // Pretvori svaki match u timestamp i uzmi najnoviji
+          for (const match of timeMatches) {
+            const parsed = match.match(/([Pp]on|[Uu]to|[Ss]ri|[Čč]et|[Pp]et|[Ss]ub|[Nn]ed)(?:to|ak)?[,.\s]+(\d{1,2})[.\s]+(\d{1,2})[.\s]*u[.\s]*(\d{1,2}):(\d{2})/i);
+            if (parsed && parsed[2] && parsed[3] && parsed[4] && parsed[5]) {
+              const dan = parseInt(parsed[2], 10);
+              const mjesec = parseInt(parsed[3], 10) - 1; // JS mjesec 0-11
+              const sat = parseInt(parsed[4], 10);
+              const minuta = parseInt(parsed[5], 10);
+              
+              // Pretpostavi 2026. godinu (trenutna)
+              const datum = new Date(2026, mjesec, dan, sat, minuta);
+              const timestamp = datum.getTime();
+              
+              if (timestamp > latestTimestamp) {
+                latestTimestamp = timestamp;
+                latestTime = match.trim();
+              }
+            }
           }
+          
+          return latestTime || null;
         }
         return null;
       });
@@ -87,7 +101,7 @@ async function updateM3U() {
       
       if (webTime) {
         emisijaInfo = webTime;
-        console.log('🕐 Web vrijeme:', webTime);
+        console.log('🕐 Web vrijeme (najnovije):', webTime);
       } else if (timeMatch) {
         const godina = timeMatch[1];
         const mjesec = timeMatch[2];
@@ -115,8 +129,8 @@ ${result.mp3}`;
   } catch (error) {
     console.error('❌', error.message);
     const fallbackContent = `#EXTM3U
-#EXTINF:-1 tvg-logo="https://radio.hrt.hr/favicon.ico",HRT U mreži prvog Pet, 06.03. u 20:00
-https://api.hrt.hr/media/28/da/20260306-u-mrezi-prvog-37328738-20260306200000.mp3`;
+#EXTINF:-1 tvg-logo="https://radio.hrt.hr/favicon.ico",HRT U mreži prvog Uto, 10.03. u 07:30
+https://api.hrt.hr/media/28/da/20260310-u-mrezi-prvog-37328738-20260310073000.mp3`;
     fs.writeFileSync('U_mrezi_prvog.m3u', fallbackContent);
     console.log('✅ Fallback U_mrezi_prvog.m3u spreman');
   } finally {
