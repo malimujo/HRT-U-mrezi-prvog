@@ -109,7 +109,7 @@ async function updateM3U() {
         const vrijeme = timeMatch[4];
         const sat = vrijeme.slice(0,2);
         const minute = vrijeme.slice(2,4);
-        emisijaInfo = `${dan}.${mjesec}.${sat}:${minute}`;
+        emisijaInfo = `${dan}.${mjesec}.${sat}:${minute}.`;
         console.log('📅 Iz MP3:', emisijaInfo);
       }
       
@@ -129,7 +129,7 @@ ${result.mp3}`;
   } catch (error) {
     console.error('❌', error.message);
     const fallbackContent = `#EXTM3U
-#EXTINF:-1 tvg-logo="https://radio.hrt.hr/favicon.ico",HRT U mreži prvog Uto, 10.03. u 07:30
+#EXTINF:-1 tvg-logo="https://radio.hrt.hr/favicon.ico",HRT U mreži prvog 10.03. u 07:30
 https://api.hrt.hr/media/28/da/20260310-u-mrezi-prvog-37328738-20260310073000.mp3`;
     fs.writeFileSync('U_mrezi_prvog.m3u', fallbackContent);
     console.log('✅ Fallback U_mrezi_prvog.m3u spreman');
