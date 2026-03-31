@@ -42,7 +42,7 @@ const result = await page.evaluate(() => {
   for (const link of allLinks) {
     const href = link.href || link.src || link.getAttribute('data-src');
     if (href && href.includes('api.hrt.hr/media') && href.includes('.mp3')) {
-      return { mp3: href, image: null, title: episodeTitle };
+      return { mp3: href, title: episodeTitle };
     }
   }
 
