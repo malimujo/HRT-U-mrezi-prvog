@@ -90,7 +90,7 @@ if (result.mp3) {
 
   const imageUrl = result.image || 'https://radio.hrt.hr/favicon.ico';
   const m3uContent = `#EXTM3U
-#EXTINF:-1 tvg-logo="${imageUrl}" group-title="Analiza",${emisijaInfo}
+#EXTINF:-1 tvg-logo="${imageUrl}" group-title="Slušaonica",${emisijaInfo}
 ${result.mp3}`;
 
   fs.writeFileSync('U_mrezi_prvog.m3u', m3uContent);
