@@ -51,8 +51,8 @@ const result = await page.evaluate(() => {
     const content = script.textContent || script.innerHTML;
     const mp3Match1 = content.match(/"https?:\/\/api\.hrt\.hr\/media[^"]*\.mp3[^"]*"/);
     const mp3Match2 = content.match(/'https?:\/\/api\.hrt\.hr\/media[^']*\.mp3[^']*'/);
-    if (mp3Match1) return { mp3: mp3Match1[0].slice(1, -1), image: imageUrl, title: episodeTitle };
-    if (mp3Match2) return { mp3: mp3Match2[0].slice(1, -1), image: imageUrl, title: episodeTitle };
+    if (mp3Match1) return { mp3: mp3Match1[0].slice(1, -1), title: episodeTitle };
+    if (mp3Match2) return { mp3: mp3Match2[0].slice(1, -1), title: episodeTitle };
   }
 
   return { mp3: null, title: 'Najnovija' };
